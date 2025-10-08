@@ -18,6 +18,7 @@ export default function SudokuGrid({
   eraseMode,
   setEraseMode,
   notesMode,
+  setNotesMode,
   setHintTarget,
   selectedCell,
   setSelectedCell,
@@ -115,7 +116,6 @@ export default function SudokuGrid({
 
       setBoard(newBoard);
 
-      // ✅ Check for board completion
       if (isBoardComplete(newBoard)) {
         pause();
         setDidWin(true);
@@ -137,12 +137,39 @@ export default function SudokuGrid({
     })
   );
 
+  const handleClearNotes = () => {
+    if (!selectedCell) return;
+    const { row, col } = selectedCell;
+    const newBoard = board.map(r => r.map(c => ({ ...c })));
+    newBoard[row][col].notes = [];
+    setBoard(newBoard);
+  };
+
   return (
-    <div className="relative flex flex-col items-center">
-      <div className="grid grid-cols-9 gap-[1px] bg-gray-400 p-[1px] rounded-md mt-8">
+    <div className="relative flex flex-col items-center px-4">
+      <div className="flex items-center gap-4 mt-4">
+        <button
+          onClick={() => setNotesMode(!notesMode)}
+          className={`px-4 py-2 rounded font-semibold ${
+            notesMode ? 'bg-yellow-400 text-yellow-900' : 'bg-gray-300 text-gray-700'
+          }`}
+        >
+          {notesMode ? '📝 Notes Mode ON' : 'Notes Mode OFF'}
+        </button>
+        {notesMode && selectedCell && (
+          <button
+            onClick={handleClearNotes}
+            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+          >
+            Clear Notes
+          </button>
+        )}
+      </div>
+
+      <div className="grid grid-cols-9 gap-[1px] bg-gray-400 p-[1px] rounded-md mt-4 w-full max-w-[360px] sm:max-w-[300px]">
         {cleanedBoard.map((row, i) =>
           row.map((cell, j) => {
-            const baseStyle = "w-10 h-10 text-center text-lg font-medium border focus:outline-none";
+            const baseStyle = "w-full aspect-square text-center text-lg font-medium border focus:outline-none";
             const bgColor = ((Math.floor(i / 3) + Math.floor(j / 3)) % 2 === 0)
               ? "bg-white"
               : "bg-amber-50";
