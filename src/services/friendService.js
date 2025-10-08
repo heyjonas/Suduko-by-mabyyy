@@ -1,106 +1,73 @@
-import { supabase } from '../supabaseClient'
+import { supabase } from '../supabaseClient';
 
-// Send a friend request
-export const sendFriendRequest = async (friendId) => {
-  const user = await supabase.auth.getUser()
-  const userId = user?.data?.user?.id
-
-  const { error } = await supabase.from('friends').insert([
-    { user_id: userId, friend_id: friendId, status: 'pending' }
-  ])
-
-  if (error) {
-    console.error('Error sending friend request:', error.message)
-  }
-}
-
-// Accept or decline a friend request
-export const respondToFriendRequest = async (requestId, accept = true) => {
-  const { error } = await supabase
-    .from('friends')
-    .update({ status: accept ? 'accepted' : 'declined' })
-    .eq('id', requestId)
-
-  if (error) {
-    console.error('Error updating friend request:', error.message)
-  }
-}
-
-// Get accepted friends
-export const getFriends = async () => {
-  const user = await supabase.auth.getUser()
-  const userId = user?.data?.user?.id
-
+// Get accepted friends for the current user
+export const getFriends = async (userId) => {
+  if (!userId) return [];
   const { data, error } = await supabase
     .from('friends')
-    .select('friend_id')
-    .eq('user_id', userId)
-    .eq('status', 'accepted')
+    .select('*')
+    .or(`user_id.eq.${userId},friend_id.eq.${userId}`)
+    .eq('status', 'accepted');
 
   if (error) {
-    console.error('Error fetching friends:', error.message)
-    return []
+    console.error('Error fetching friends:', error.message);
+    return [];
   }
 
-  return data
-}
+  return data;
+};
 
-// Optional: Listen for real-time updates
-export const subscribeToFriendChanges = (callback) => {
-  const subscription = supabase
-    .from('friends')
-    .on('*', payload => {
-      callback(payload)
-    })
-    .subscribe()
-
-  return subscription
-}
-
-export const fetchPendingRequests = async () => {
-  const user = await supabase.auth.getUser()
-  const userId = user?.data?.user?.id
-
+// Fetch pending friend requests sent to the current user
+export const fetchPendingRequests = async (userId) => {
+  if (!userId) return [];
   const { data, error } = await supabase
     .from('friends')
     .select('*')
     .eq('friend_id', userId)
-    .eq('status', 'pending')
+    .eq('status', 'pending');
 
   if (error) {
-    console.error('Error fetching pending requests:', error.message)
-    return []
+    console.error('Error fetching pending requests:', error.message);
+    return [];
   }
 
-  return data
-}
+  return data;
+};
 
-export const getMutualFriends = async (userId, targetUserId) => {
-  const { data: userFriends, error: userError } = await supabase
+// Send a friend request
+export const sendFriendRequest = async (userId, friendId) => {
+  if (!userId || !friendId) return;
+  const { error } = await supabase
     .from('friends')
-    .select('friend_id')
-    .eq('user_id', userId)
-    .eq('status', 'accepted')
+    .insert([{ user_id: userId, friend_id: friendId }]);
 
-  const { data: targetFriends, error: targetError } = await supabase
-    .from('friends')
-    .select('friend_id')
-    .eq('user_id', targetUserId)
-    .eq('status', 'accepted')
-
-  if (userError || targetError) {
-    console.error('Error fetching mutual friends')
-    return []
+  if (error) {
+    console.error('Error sending friend request:', error.message);
   }
+};
 
-  const mutualIds = userFriends
-    .map(f => f.friend_id)
-    .filter(id => targetFriends.some(tf => tf.friend_id === id))
+// Respond to a friend request
+export const respondToFriendRequest = async (requestId, accept) => {
+  const { error } = await supabase
+    .from('friends')
+    .update({ status: accept ? 'accepted' : 'declined' })
+    .eq('id', requestId);
 
-  const { data: profiles } = await supabase
-    .from('profiles')
-    .select('id, username, avatar_url')
-    .in('id', mutualIds)
+  if (error) {
+    console.error('Error responding to friend request:', error.message);
+  }
+};
 
-  return profiles
-}
+// Cancel a friend request
+export const cancelFriendRequest = async (requestId, userId) => {
+  if (!requestId || !userId) return;
+  const { error } = await supabase
+    .from('friends')
+    .delete()
+    .eq('id', requestId)
+    .eq('user_id', userId);
+
+  if (error) {
+    console.error('Error canceling friend request:', error.message);
+  }
+};

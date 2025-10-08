@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useContext } from 'react'
 import { supabase } from '../supabaseClient'
 import { SessionContext } from '../context/SessionContext'
@@ -11,10 +12,11 @@ const ProfileSettings = () => {
   const [avatarUrl, setAvatarUrl] = useState('')
   const [uploading, setUploading] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [confirmationMessage, setConfirmationMessage] = useState('')
 
   useEffect(() => {
     if (!session) {
-      navigate('/login')
+      navigate('/auth')
     } else {
       fetchProfile()
     }
@@ -30,8 +32,8 @@ const ProfileSettings = () => {
       .maybeSingle()
 
     if (!data) {
-        console.warn('No profile found for this user.');
-    return;
+      console.warn('No profile found for this user.')
+      return
     }
 
     if (error) {
@@ -55,8 +57,9 @@ const ProfileSettings = () => {
 
     if (error) {
       alert('Update failed: ' + error.message)
+      setConfirmationMessage('')
     } else {
-      alert('Profile updated successfully!')
+      setConfirmationMessage('🎉 Profile updated successfully!')
     }
 
     setLoading(false)
@@ -93,14 +96,14 @@ const ProfileSettings = () => {
 
   return (
     <div className="p-6 max-w-md mx-auto">
-      <h2 className="text-2xl font-bold mb-4">Profile Settings</h2>
+      <h2 className="text-2xl font-bold mb-4 text-yellow-800">Profile Settings</h2>
 
       <input
         type="text"
         placeholder="Preferred Username"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
-        className="border px-2 py-1 mb-4 w-full"
+        className="border px-2 py-1 mb-4 w-full rounded"
       />
 
       <input
@@ -122,10 +125,17 @@ const ProfileSettings = () => {
       <button
         onClick={updateProfile}
         disabled={loading}
-        className="bg-green-600 text-white px-4 py-2 rounded w-full"
+        className="bg-green-600 text-white px-4 py-2 rounded w-full hover:bg-green-700 transition"
       >
         {loading ? 'Updating...' : 'Save Changes'}
       </button>
+
+      {confirmationMessage && (
+        <div className="mt-4 text-green-700 bg-green-100 border border-green-300 px-4 py-2 rounded text-center">
+          {confirmationMessage}
+        </div>
+      )}
+
       <Menu />
     </div>
   )
