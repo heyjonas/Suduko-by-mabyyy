@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { SessionContext } from './context/SessionContext';
-import { submitScore } from "./services/leaderBoardService";
+import { submitScore } from "./services/leaderboardService";
 import SudokuGrid from "./components/SudokuGrid";
 import Controls from "./components/Controls";
 import NumberPad from "./components/NumberPad";
