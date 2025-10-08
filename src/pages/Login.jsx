@@ -29,7 +29,7 @@ const Login = () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: 'https://sudoku-by-mabyyy.vercel.app/auth/callback' // Your Vercel domain
+        redirectTo: 'https://qttiukgcakhoygxgsfvf.supabase.co/auth/v1/callback' // Your Vercel domain
       }
     });
 
