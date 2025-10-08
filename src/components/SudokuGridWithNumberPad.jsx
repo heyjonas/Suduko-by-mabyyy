@@ -1,10 +1,13 @@
+
 import React from "react";
 import { isValidMove } from "../utils/sudoku";
+import NumberPad from "./NumberPad";
 
 export default function SudokuGrid({
   board,
   setBoard,
   selectedNumber,
+  setSelectedNumber,
   mistakes,
   setMistakes,
   maxMistakes,
@@ -23,8 +26,17 @@ export default function SudokuGrid({
   selectedCell,
   setSelectedCell,
   pause,
-  setDidWin
+  setDidWin,
+  isPaused,
+  hintCount,
+  maxHints,
+  hintOptions,
+  setHintOptions,
+  setPendingHint,
+  setShowHintModal
 }) {
+  const MAX_NOTES = 5;
+
   function isGroupComplete(group) {
     const values = group.map(cell => cell.value);
     const unique = new Set(values);
@@ -63,7 +75,9 @@ export default function SudokuGrid({
         if (notes.includes(selectedNumber)) {
           newBoard[row][col].notes = notes.filter(n => n !== selectedNumber);
         } else {
-          newBoard[row][col].notes = [...notes, selectedNumber].sort((a, b) => a - b);
+          if (notes.length < MAX_NOTES) {
+            newBoard[row][col].notes = [...notes, selectedNumber].sort((a, b) => a - b);
+          }
         }
         setBoard(newBoard);
       }
@@ -73,6 +87,7 @@ export default function SudokuGrid({
     if (selectedNumber !== null) {
       newBoard[row][col].value = selectedNumber;
       newBoard[row][col].notes = [];
+      newBoard[row][col].hintOptions = null;
 
       setInputHistory([...inputHistory, { row, col }]);
 
@@ -147,29 +162,21 @@ export default function SudokuGrid({
 
   return (
     <div className="relative flex flex-col items-center px-4">
-      <div className="flex items-center gap-4 mt-4">
-        <button
-          onClick={() => setNotesMode(!notesMode)}
-          className={`px-4 py-2 rounded font-semibold ${
-            notesMode ? 'bg-yellow-400 text-yellow-900' : 'bg-gray-300 text-gray-700'
-          }`}
-        >
-          {notesMode ? '📝 Notes Mode ON' : 'Notes Mode OFF'}
-        </button>
-        {notesMode && selectedCell && (
-          <button
-            onClick={handleClearNotes}
-            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-          >
-            Clear Notes
-          </button>
-        )}
+      {/* Hints left section */}
+      <div className="sticky top-0 z-20 bg-gray-100 w-full py-2 text-center text-sm text-gray-700">
+        <span className="mr-2">Hints left:</span>
+        {Array.from({ length: maxHints }).map((_, i) => (
+          <span key={i} className="text-lg">
+            {i < hintCount ? "💡" : "🕯️"}
+          </span>
+        ))}
       </div>
 
+      {/* Sudoku grid */}
       <div className="grid grid-cols-9 gap-[1px] bg-gray-400 p-[1px] rounded-md mt-4 w-full max-w-[360px] sm:max-w-[300px]">
         {cleanedBoard.map((row, i) =>
           row.map((cell, j) => {
-            const baseStyle = "w-full aspect-square text-center text-lg font-medium border focus:outline-none";
+            const baseStyle = "min-w-[32px] min-h-[32px] aspect-square text-center text-sm sm:text-base md:text-lg font-medium border focus:outline-none transition active:scale-95";
             const bgColor = ((Math.floor(i / 3) + Math.floor(j / 3)) % 2 === 0)
               ? "bg-white"
               : "bg-amber-50";
@@ -185,30 +192,52 @@ export default function SudokuGrid({
               <button
                 key={`${i}-${j}`}
                 onClick={() => handleCellClick(i, j)}
+                tabIndex={0}
                 className={`${baseStyle} ${bgColor} ${readonlyStyle} ${invalidStyle} ${animationStyle} ${highlightStyle}`}
               >
                 {cell.value !== 0 ? (
                   cell.value
-                ) : cell.notes && cell.notes.length > 0 ? (
-                  <div className="grid grid-cols-3 gap-[1px] text-[0.6rem] text-gray-400 leading-tight">
+                ) : cell.hintOptions ? (
+                  <div className="grid grid-cols-3 gap-[2px] text-[0.6rem] italic text-orange-600 leading-tight">
                     {Array.from({ length: 9 }).map((_, n) => (
                       <div
                         key={n}
                         className="h-3 w-3 flex items-center justify-center"
                         onClick={(e) => {
                           e.stopPropagation();
-                          if (notesMode && cell.notes.includes(n + 1)) {
-                            const newBoard = board.map(r => r.map(c => ({ ...c })));
-                            newBoard[i][j].notes = newBoard[i][j].notes.filter(num => num !== n + 1);
-                            setBoard(newBoard);
+                          if (cell.hintOptions.includes(n + 1)) {
+                            setPendingHint({ row: i, col: j, value: n + 1 });
+                            setShowHintModal(true);
                           }
                         }}
                       >
-                        {cell.notes.includes(n + 1) ? n + 1 : ""}
+                        {cell.hintOptions.includes(n + 1) ? n + 1 : ""}
                       </div>
                     ))}
                   </div>
-                ) : (
+                ) : cell.notes && cell.notes.length > 0 ? (
+                  <div className="grid grid-cols-3 gap-[2px] text-[0.6rem] text-gray-400 leading-tight">
+                    {Array.from({ length: 9 }).map((_, n) => (
+                      <div
+                        key={n}
+                        className="h-3 w-3 flex items-center justify-center"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const newBoard = board.map(r => r.map(c => ({ ...c })));
+                              const notes = newBoard[i][j].notes || [];
+                              if (notes.includes(n + 1)) {
+                                newBoard[i][j].notes = notes.filter(num => num !== n + 1);
+                              } else if (notes.length < 5) {
+                                newBoard[i][j].notes = [...notes, n + 1].sort((a, b) => a - b);
+                              }
+                              setBoard(newBoard);
+                            }}
+                          >
+                            {cell.notes.includes(n + 1) ? n + 1 : ""}
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
                   ""
                 )}
               </button>
@@ -216,6 +245,31 @@ export default function SudokuGrid({
           })
         )}
       </div>
+
+      {/* Notes Mode toggle and Clear Notes button below the grid */}
+      <div className="flex items-center gap-4 mt-4">
+        <button
+          onClick={() => setNotesMode(!notesMode)}
+          className={`px-4 py-2 rounded font-semibold ${notesMode ? 'bg-yellow-400 text-yellow-900' : 'bg-gray-300 text-gray-700'}`}
+        >
+          {notesMode ? '📝 Notes Mode ON' : 'Notes Mode OFF'}
+        </button>
+        {notesMode && selectedCell && (
+          <button
+            onClick={handleClearNotes}
+            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+          >
+            Clear Notes
+          </button>
+        )}
+      </div>
+
+      {/* NumberPad below controls and moves with layout */}
+      {!gameOver && !isPaused && (
+        <div className="mt-4 w-full overflow-x-auto">
+          <NumberPad onSelect={setSelectedNumber} />
+        </div>
+      )}
     </div>
   );
 }
