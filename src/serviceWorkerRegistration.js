@@ -1,4 +1,3 @@
-
 // serviceWorkerRegistration.js
 const isLocalhost = Boolean(
   window.location.hostname === 'localhost' ||
@@ -10,7 +9,7 @@ const isLocalhost = Boolean(
 
 export function register(config) {
   if ('serviceWorker' in navigator) {
-    const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`;
+    const swUrl = '/service-worker.js'; // Vite uses static paths
 
     window.addEventListener('load', () => {
       if (isLocalhost) {
