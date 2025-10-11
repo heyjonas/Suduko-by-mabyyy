@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react'
-import { supabase } from '../supabaseClient'
-import { useNavigate } from 'react-router-dom'
-import { SessionContext } from '../context/SessionContext'
+import React, { useState, useEffect } from 'react';
+import { supabase } from '../../supabaseClient';
+import { useNavigate } from 'react-router-dom';
+import { SessionContext } from '../../context/SessionContext';
 
 const Signup = () => {
   const [email, setEmail] = useState('')
