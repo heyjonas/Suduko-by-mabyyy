@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useContext } from 'react'
 import { supabase } from '../supabaseClient'
 import { SessionContext } from '../context/SessionContext'
@@ -95,47 +94,48 @@ const ProfileSettings = () => {
   }
 
   return (
-    <div className="p-6 max-w-md mx-auto">
-      <h2 className="text-2xl font-bold mb-4 text-yellow-800">Profile Settings</h2>
+    <div className="min-h-screen w-full overflow-x-hidden bg-white">
+      <div className="p-6 max-w-md mx-auto">
+        <h2 className="text-2xl font-bold mb-4 text-yellow-800 text-center">Profile Settings</h2>
 
-      <input
-        type="text"
-        placeholder="Preferred Username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        className="border px-2 py-1 mb-4 w-full rounded"
-      />
-
-      <input
-        type="file"
-        accept="image/*"
-        onChange={handleAvatarUpload}
-        disabled={uploading}
-        className="mb-4"
-      />
-
-      {avatarUrl && (
-        <img
-          src={avatarUrl}
-          alt="Avatar"
-          className="w-24 h-24 rounded-full border mb-4"
+        <input
+          type="text"
+          placeholder="Preferred Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          className="border px-2 py-1 mb-4 w-full rounded"
         />
-      )}
 
-      <button
-        onClick={updateProfile}
-        disabled={loading}
-        className="bg-green-600 text-white px-4 py-2 rounded w-full hover:bg-green-700 transition"
-      >
-        {loading ? 'Updating...' : 'Save Changes'}
-      </button>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleAvatarUpload}
+          disabled={uploading}
+          className="mb-4"
+        />
 
-      {confirmationMessage && (
-        <div className="mt-4 text-green-700 bg-green-100 border border-green-300 px-4 py-2 rounded text-center">
-          {confirmationMessage}
-        </div>
-      )}
+        {avatarUrl && (
+          <img
+            src={avatarUrl}
+            alt="Avatar"
+            className="w-24 h-24 rounded-full border mb-4 mx-auto"
+          />
+        )}
 
+        <button
+          onClick={updateProfile}
+          disabled={loading}
+          className="bg-green-600 text-white px-4 py-2 rounded w-full hover:bg-green-700 transition"
+        >
+          {loading ? 'Updating...' : 'Save Changes'}
+        </button>
+
+        {confirmationMessage && (
+          <div className="mt-4 text-green-700 bg-green-100 border border-green-300 px-4 py-2 rounded text-center">
+            {confirmationMessage}
+          </div>
+        )}
+      </div>
       <Menu />
     </div>
   )

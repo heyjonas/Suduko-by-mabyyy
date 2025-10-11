@@ -37,19 +37,19 @@ export default function Menu() {
 
   return (
     <nav className="fixed bottom-0 left-0 w-full bg-yellow-100 border-t border-yellow-300 shadow-md z-50">
-      <div className="flex justify-around items-center py-2 text-xs font-medium text-yellow-800 relative">
+      <div className="flex justify-around items-center py-2 text-xs font-medium text-yellow-800 relative overflow-x-auto">
         {visibleItems.map(item => (
           <Link
             key={item.path}
             to={item.path}
-            className="flex flex-col items-center hover:text-yellow-600 transition-colors duration-200"
+            className="flex flex-col items-center hover:text-yellow-600 transition-colors duration-200 min-w-[60px]"
           >
             <div className="text-xl">{item.icon}</div>
             <span>{item.label}</span>
           </Link>
         ))}
         {session ? (
-          <div className="relative flex flex-col items-center" ref={dropdownRef}>
+          <div className="relative flex flex-col items-center min-w-[60px]" ref={dropdownRef}>
             <button
               onClick={() => setShowDropdown(!showDropdown)}
               className="flex flex-col items-center focus:outline-none"
@@ -82,7 +82,7 @@ export default function Menu() {
         ) : (
           <Link
             to="/auth"
-            className="flex flex-col items-center hover:text-blue-600 transition-colors duration-200"
+            className="flex flex-col items-center hover:text-blue-600 transition-colors duration-200 min-w-[60px]"
           >
             <div className="text-xl"><FaSignInAlt /></div>
             <span>Login</span>

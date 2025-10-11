@@ -161,8 +161,7 @@ export default function SudokuGrid({
   };
 
   return (
-    <div className="relative flex flex-col items-center px-4">
-      {/* Sudoku grid */}
+    <div className="relative flex flex-col items-center px-4 w-full overflow-x-hidden">
       <div className="grid grid-cols-9 gap-[1px] bg-gray-400 p-[1px] rounded-md mt-4 w-full max-w-[360px] sm:max-w-[320px] xs:max-w-[280px]">
         {cleanedBoard.map((row, i) =>
           row.map((cell, j) => {
@@ -236,7 +235,6 @@ export default function SudokuGrid({
         )}
       </div>
 
-      {/* Notes Mode toggle and Clear Notes button below the grid */}
       <div className="flex flex-wrap justify-center gap-2 mt-4 text-xs sm:text-sm">
         <button
           onClick={() => setNotesMode(!notesMode)}
@@ -254,7 +252,6 @@ export default function SudokuGrid({
         )}
       </div>
 
-      {/* NumberPad below controls and moves with layout */}
       {!gameOver && !isPaused && (
         <div className="mt-4 w-full">
           <NumberPad onSelect={setSelectedNumber} />

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext, useRef } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import {
   getFriends,
   sendFriendRequest,
@@ -130,7 +130,7 @@ const FriendList = () => {
   };
 
   return (
-    <div>
+    <div className="min-h-screen w-full overflow-x-hidden bg-white">
       <div className="p-6 max-w-xl mx-auto">
         <h2 className="text-2xl font-bold mb-4">Your Friends</h2>
 
@@ -139,7 +139,7 @@ const FriendList = () => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="Search by username"
-          className="border px-2 py-1 mb-4 w-full"
+          className="border px-2 py-1 mb-4 w-full rounded"
         />
 
         {friendProfiles.length === 0 ? (
@@ -172,13 +172,13 @@ const FriendList = () => {
         )}
 
         <h3 className="text-lg font-semibold mb-2">Send Friend Request</h3>
-        <div className="flex mb-6">
+        <div className="flex flex-wrap mb-6 gap-2">
           <input
             type="text"
             value={newFriendUsername}
             onChange={(e) => setNewFriendUsername(e.target.value)}
             placeholder="Enter Friend's Username"
-            className="border px-2 py-1 mr-2 flex-grow"
+            className="border px-2 py-1 flex-grow rounded"
           />
           <button
             onClick={handleSendRequest}
@@ -197,7 +197,7 @@ const FriendList = () => {
               const request = pendingRequests.find(r => r.user_id === profile.id);
               return (
                 <li key={profile.id} className="mb-4">
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between flex-wrap gap-2">
                     <div className="flex items-center">
                       <img
                         src={profile.avatar_url || 'https://via.placeholder.com/40'}
@@ -209,16 +209,16 @@ const FriendList = () => {
                         <span className="ml-2 text-yellow-600 text-xs">Pending</span>
                       </div>
                     </div>
-                    <div>
+                    <div className="flex gap-2 flex-wrap">
                       <button
                         onClick={() => handleRespond(request.id, true)}
-                        className="bg-green-500 text-white px-2 py-1 rounded mr-2"
+                        className="bg-green-500 text-white px-2 py-1 rounded"
                       >
                         Accept
                       </button>
                       <button
                         onClick={() => handleRespond(request.id, false)}
-                        className="bg-red-500 text-white px-2 py-1 rounded mr-2"
+                        className="bg-red-500 text-white px-2 py-1 rounded"
                       >
                         Decline
                       </button>

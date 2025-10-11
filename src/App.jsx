@@ -175,39 +175,39 @@ export default function App() {
   if (showSplash) return <SplashScreen onFinish={() => setShowSplash(false)} />;
 
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen pt-2 pb-1 px-2 bg-gray-100">
-      <div className="fixed top-0 left-0 w-full z-50 text-center py-3">
-        <TopBar
-          time={formatted}
-          difficulty={difficulty}
-          mistakes={mistakes}
-          maxMistakes={maxMistakes}
-          isPaused={isPaused}
-          mistakeFlash={mistakeFlash}
-          onPause={handlePause}
-          hintCount={hintCount}
-        />
-      </div>
+    <main className="flex flex-col items-center justify-start min-h-screen w-full overflow-x-hidden bg-gray-100 pt-[80px] px-2">
+  <div className="fixed top-0 left-0 w-full z-50 text-center py-3">
+    <TopBar
+      time={formatted}
+      difficulty={difficulty}
+      mistakes={mistakes}
+      maxMistakes={maxMistakes}
+      isPaused={isPaused}
+      mistakeFlash={mistakeFlash}
+      onPause={handlePause}
+      hintCount={hintCount}
+    />
+  </div>
 
-      {showPausePrompt && (
-        <PauseModal
-          onResume={handleResume}
-          onNewGame={() => {
-            generateNewGame();
-            reset();
-            setShowPausePrompt(false);
-          }}
-          onGoHome={() => navigate("/")}
-        />
-      )}
+  {showPausePrompt && (
+    <PauseModal
+      onResume={handleResume}
+      onNewGame={() => {
+        generateNewGame();
+        reset();
+        setShowPausePrompt(false);
+      }}
+      onGoHome={() => navigate("/")}
+    />
+  )}
 
-      {showGameOverPrompt && (
-        <div className={`transition-all ${didWin ? 'animate-pulse bg-yellow-100 border-4 border-yellow-400 rounded-lg p-2' : ''}`}>
-          {didWin && <Confetti />}
-          <ModalWrapper
-            title={didWin ? "🎉 You Win!" : "Game Over"}
-            message={
-              `${didWin ? "🎉 You Win!" : "You've made 3 mistakes."}
+  {showGameOverPrompt && (
+    <div className={`transition-all ${didWin ? 'animate-pulse bg-yellow-100 border-4 border-yellow-400 rounded-lg p-2' : ''}`}>
+      {didWin && <Confetti />}
+      <ModalWrapper
+        title={didWin ? "🎉 You Win!" : "Game Over"}
+        message={
+          `${didWin ? "🎉 You Win!" : "You've made 3 mistakes."}
 Final Time: ${formatted}
 Score: ${finalScore}
 
@@ -219,79 +219,81 @@ Breakdown:
 - Final Score: ${scoreBreakdown?.calculatedScore}
 
 Would you like to start a new game or go to Home?`
-            }
-          >
-            <button
-              onClick={generateNewGame}
-              className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors duration-200"
-            >
-              New Game
-            </button>
-            <button
-              onClick={() => navigate("/")}
-              className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors duration-200"
-            >
-              Go to Home
-            </button>
-            <button
-              onClick={() => navigate("/leaderboard")}
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors duration-200 mt-2"
-            >
-              View Leaderboard
-            </button>
-          </ModalWrapper>
-        </div>
-      )}
+        }
+      >
+        <button
+          onClick={generateNewGame}
+          className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors duration-200"
+        >
+          New Game
+        </button>
+        <button
+          onClick={() => navigate("/")}
+          className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors duration-200"
+        >
+          Go to Home
+        </button>
+        <button
+          onClick={() => navigate("/leaderboard")}
+          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors duration-200 mt-2"
+        >
+          View Leaderboard
+        </button>
+      </ModalWrapper>
+    </div>
+  )}
 
-      {showHintModal && pendingHint && (
-        <HintConfirmModal
-          options={[pendingHint.value]}
-          onConfirm={() => confirmHint(pendingHint.row, pendingHint.col, pendingHint.value)}
-        />
-      )}
+  {showHintModal && pendingHint && (
+    <HintConfirmModal
+      options={[pendingHint.value]}
+      onConfirm={() => confirmHint(pendingHint.row, pendingHint.col, pendingHint.value)}
+    />
+  )}
 
-      <div className="relative w-full max-w-md mx-auto">
-        <SudokuGrid
-          board={board}
-          setBoard={setBoard}
-          selectedNumber={selectedNumber}
-          setSelectedNumber={setSelectedNumber}
-          mistakes={mistakes}
-          setMistakes={setMistakes}
-          maxMistakes={maxMistakes}
-          gameOver={gameOver}
-          setGameOver={setGameOver}
-          setShowGameOverPrompt={setShowGameOverPrompt}
-          mistakeFlash={mistakeFlash}
-          setMistakeFlash={setMistakeFlash}
-          inputHistory={inputHistory}
-          setInputHistory={setInputHistory}
-          eraseMode={eraseMode}
-          setEraseMode={setEraseMode}
-          notesMode={notesMode}
-          setNotesMode={setNotesMode}
-          setHintTarget={setHintTarget}
-          selectedCell={selectedCell}
-          setSelectedCell={setSelectedCell}
-          pause={pause}
-          setDidWin={setDidWin}
-          isPaused={isPaused}
-          hintCount={hintCount}
-          maxHints={maxHints}
-          hintOptions={hintOptions}
-          setHintOptions={setHintOptions}
-          setPendingHint={setPendingHint}
-          setShowHintModal={setShowHintModal}
-        />
-      </div>
+  <div className="relative w-full max-w-[360px] sm:max-w-[320px] xs:max-w-[280px] mx-auto">
+    <SudokuGrid
+      board={board}
+      setBoard={setBoard}
+      selectedNumber={selectedNumber}
+      setSelectedNumber={setSelectedNumber}
+      mistakes={mistakes}
+      setMistakes={setMistakes}
+      maxMistakes={maxMistakes}
+      gameOver={gameOver}
+      setGameOver={setGameOver}
+      setShowGameOverPrompt={setShowGameOverPrompt}
+      mistakeFlash={mistakeFlash}
+      setMistakeFlash={setMistakeFlash}
+      inputHistory={inputHistory}
+      setInputHistory={setInputHistory}
+      eraseMode={eraseMode}
+      setEraseMode={setEraseMode}
+      notesMode={notesMode}
+      setNotesMode={setNotesMode}
+      setHintTarget={setHintTarget}
+      selectedCell={selectedCell}
+      setSelectedCell={setSelectedCell}
+      pause={pause}
+      setDidWin={setDidWin}
+      isPaused={isPaused}
+      hintCount={hintCount}
+      maxHints={maxHints}
+      hintOptions={hintOptions}
+      setHintOptions={setHintOptions}
+      setPendingHint={setPendingHint}
+      setShowHintModal={setShowHintModal}
+    />
+  </div>
 
-      <Controls
-        onUndo={handleUndo}
-        onErase={handleErase}
-        onHint={handleHint}
-        onToggleNotes={() => setNotesMode(!notesMode)}
-        notesMode={notesMode}
-      />
-    </main>
+  <div className="w-full max-w-[360px] sm:max-w-[320px] xs:max-w-[280px] mx-auto">
+    <Controls
+      onUndo={handleUndo}
+      onErase={handleErase}
+      onHint={handleHint}
+      onToggleNotes={() => setNotesMode(!notesMode)}
+      notesMode={notesMode}
+    />
+  </div>
+</main>
   );
 }

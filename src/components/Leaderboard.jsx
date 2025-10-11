@@ -41,28 +41,32 @@ const Leaderboard = () => {
   }
 
   return (
-    <div className="p-6 max-w-2xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4">🏆 Leaderboard</h2>
-      <table className="w-full border-collapse">
-        <thead>
-          <tr className="bg-gray-200 text-left">
-            <th className="px-4 py-2">Username</th>
-            <th className="px-4 py-2">Score</th>
-            <th className="px-4 py-2">Difficulty</th>
-            <th className="px-4 py-2">Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          {entries.map((entry, index) => (
-            <tr key={index} className="border-t">
-              <td className="px-4 py-2">{entry.username}</td>
-              <td className="px-4 py-2">{entry.score}</td>
-              <td className="px-4 py-2 capitalize">{entry.difficulty}</td>
-              <td className="px-4 py-2">{new Date(entry.timestamp).toLocaleDateString()}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="min-h-screen bg-gray-100 overflow-x-hidden pb-20">
+      <div className="p-6 max-w-2xl mx-auto">
+        <h2 className="text-2xl font-bold mb-4 text-yellow-800">🏆 Leaderboard</h2>
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-sm sm:text-base">
+            <thead>
+              <tr className="bg-gray-200 text-left">
+                <th className="px-4 py-2">Username</th>
+                <th className="px-4 py-2">Score</th>
+                <th className="px-4 py-2">Difficulty</th>
+                <th className="px-4 py-2">Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {entries.map((entry, index) => (
+                <tr key={index} className="border-t">
+                  <td className="px-4 py-2">{entry.username}</td>
+                  <td className="px-4 py-2">{entry.score}</td>
+                  <td className="px-4 py-2 capitalize">{entry.difficulty}</td>
+                  <td className="px-4 py-2">{new Date(entry.timestamp).toLocaleDateString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
       <Menu />
     </div>
   )
