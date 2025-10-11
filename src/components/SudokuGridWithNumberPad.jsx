@@ -163,10 +163,10 @@ export default function SudokuGrid({
   return (
     <div className="relative flex flex-col items-center px-4">
       {/* Sudoku grid */}
-      <div className="grid grid-cols-9 gap-[1px] bg-gray-400 p-[1px] rounded-md mt-4 w-full max-w-[360px] sm:max-w-[300px]">
+      <div className="grid grid-cols-9 gap-[1px] bg-gray-400 p-[1px] rounded-md mt-4 w-full max-w-[360px] sm:max-w-[320px] xs:max-w-[280px]">
         {cleanedBoard.map((row, i) =>
           row.map((cell, j) => {
-            const baseStyle = "min-w-[32px] min-h-[32px] aspect-square text-center text-sm sm:text-base md:text-lg font-medium border focus:outline-none transition active:scale-95";
+            const baseStyle = "min-w-[32px] min-h-[32px] aspect-square text-center text-xs sm:text-sm md:text-base font-medium border focus:outline-none transition active:scale-95";
             const bgColor = ((Math.floor(i / 3) + Math.floor(j / 3)) % 2 === 0)
               ? "bg-white"
               : "bg-amber-50";
@@ -188,7 +188,7 @@ export default function SudokuGrid({
                 {cell.value !== 0 ? (
                   cell.value
                 ) : cell.hintOptions ? (
-                  <div className="grid grid-cols-3 gap-[2px] text-[0.6rem] italic text-orange-600 leading-tight">
+                  <div className="grid grid-cols-3 gap-[2px] text-[0.5rem] italic text-orange-600 leading-tight">
                     {Array.from({ length: 9 }).map((_, n) => (
                       <div
                         key={n}
@@ -206,28 +206,28 @@ export default function SudokuGrid({
                     ))}
                   </div>
                 ) : cell.notes && cell.notes.length > 0 ? (
-                  <div className="grid grid-cols-3 gap-[2px] text-[0.6rem] text-gray-400 leading-tight">
+                  <div className="grid grid-cols-3 gap-[2px] text-[0.5rem] text-gray-400 leading-tight">
                     {Array.from({ length: 9 }).map((_, n) => (
                       <div
                         key={n}
                         className="h-3 w-3 flex items-center justify-center"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              const newBoard = board.map(r => r.map(c => ({ ...c })));
-                              const notes = newBoard[i][j].notes || [];
-                              if (notes.includes(n + 1)) {
-                                newBoard[i][j].notes = notes.filter(num => num !== n + 1);
-                              } else if (notes.length < 5) {
-                                newBoard[i][j].notes = [...notes, n + 1].sort((a, b) => a - b);
-                              }
-                              setBoard(newBoard);
-                            }}
-                          >
-                            {cell.notes.includes(n + 1) ? n + 1 : ""}
-                          </div>
-                        ))}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const newBoard = board.map(r => r.map(c => ({ ...c })));
+                          const notes = newBoard[i][j].notes || [];
+                          if (notes.includes(n + 1)) {
+                            newBoard[i][j].notes = notes.filter(num => num !== n + 1);
+                          } else if (notes.length < 5) {
+                            newBoard[i][j].notes = [...notes, n + 1].sort((a, b) => a - b);
+                          }
+                          setBoard(newBoard);
+                        }}
+                      >
+                        {cell.notes.includes(n + 1) ? n + 1 : ""}
                       </div>
-                    ) : (
+                    ))}
+                  </div>
+                ) : (
                   ""
                 )}
               </button>
@@ -237,17 +237,17 @@ export default function SudokuGrid({
       </div>
 
       {/* Notes Mode toggle and Clear Notes button below the grid */}
-      <div className="flex items-center gap-4 mt-4">
+      <div className="flex flex-wrap justify-center gap-2 mt-4 text-xs sm:text-sm">
         <button
           onClick={() => setNotesMode(!notesMode)}
-          className={`px-4 py-2 rounded font-semibold ${notesMode ? 'bg-yellow-400 text-yellow-900' : 'bg-gray-300 text-gray-700'}`}
+          className={`px-2 py-1 rounded font-semibold ${notesMode ? 'bg-yellow-400 text-yellow-900' : 'bg-gray-300 text-gray-700'}`}
         >
           {notesMode ? '📝 Notes Mode ON' : 'Notes Mode OFF'}
         </button>
         {notesMode && selectedCell && (
           <button
             onClick={handleClearNotes}
-            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+            className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
           >
             Clear Notes
           </button>
@@ -256,7 +256,7 @@ export default function SudokuGrid({
 
       {/* NumberPad below controls and moves with layout */}
       {!gameOver && !isPaused && (
-        <div className="mt-4 w-full overflow-x-auto">
+        <div className="mt-4 w-full">
           <NumberPad onSelect={setSelectedNumber} />
         </div>
       )}
