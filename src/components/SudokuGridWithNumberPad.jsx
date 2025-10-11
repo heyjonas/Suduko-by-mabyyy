@@ -162,16 +162,6 @@ export default function SudokuGrid({
 
   return (
     <div className="relative flex flex-col items-center px-4">
-      {/* Hints left section */}
-      <div className="sticky top-0 z-20 bg-gray-100 w-full py-2 text-center text-sm text-gray-700">
-        <span className="mr-2">Hints left:</span>
-        {Array.from({ length: maxHints }).map((_, i) => (
-          <span key={i} className="text-lg">
-            {i < hintCount ? "💡" : "🕯️"}
-          </span>
-        ))}
-      </div>
-
       {/* Sudoku grid */}
       <div className="grid grid-cols-9 gap-[1px] bg-gray-400 p-[1px] rounded-md mt-4 w-full max-w-[360px] sm:max-w-[300px]">
         {cleanedBoard.map((row, i) =>

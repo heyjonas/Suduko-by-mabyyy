@@ -185,6 +185,7 @@ export default function App() {
           isPaused={isPaused}
           mistakeFlash={mistakeFlash}
           onPause={handlePause}
+          hintCount={hintCount}
         />
       </div>
 
